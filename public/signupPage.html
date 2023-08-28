@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp Page</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+</head>
+
+<body>
+    <form action="/signup" method="post">
+        <label for="name"> Name:
+            <input type="text" name="name" id="name">
+        </label>
+        <label for="email"> Email:
+            <input type="email" name="email" id="email">
+        </label>
+        <label for="phone"> Phone:
+            <input type="text" name="phone" id="phone">
+        </label>
+        <label for="password"> Password:
+            <input type="password" name="password" id="password">
+        </label>
+        <button type="submit" id="button">Sign Up</button>
+    </form>
+    <form action="/login">
+        <button>Log in!</button>
+    </form>
+    <div class="divv">
+        <h1 id="h11"></h1>
+    </div>
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            const object = {
+                name: name,
+                email: email,
+                phone: phone,
+                password: password
+            }
+
+            try {
+                const response = await axios.post('http://localhost:3000/signup', object);
+
+                if (response.status === 201) {
+                    const text = document.getElementById('h11');
+                    text.innerHTML = `<p style="color:green;">User Created</p>`;
+
+                } else if (response.data.success===false) {
+                    const text = document.getElementById('h11');
+                    text.innerHTML = `<p style="color:red;">User Already Exists</p>`;
+                }
+            }
+            catch(err){
+                console.log(err);
+            }
+            
+        });
+    </script>
+</body>
+
+</html>
