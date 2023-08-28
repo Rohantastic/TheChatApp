@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 
-
+const cors = require('cors');
 const app = express();
 const server = http.createServer(app);
 const socketio = require('socket.io');
@@ -10,9 +10,13 @@ const io = socketio(server);
 const formatMessage = require('./utils/messages');
 const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
 const userRoute = require('./routes/user');
+const User = require('./models/user');
+const Message = require('./models/message');
+const sequelize = require('./config/database');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -69,6 +73,10 @@ io.on('connection', (socket) => {
 
 app.use('/',userRoute);
 
+User.hasMany(Message);
+Message.belongsTo(User);
+
+sequelize.sync();
 
 server.listen(3000, (err) => {
     console.log('running')
